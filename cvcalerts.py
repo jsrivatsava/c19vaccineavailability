@@ -57,7 +57,13 @@ def prepare_report(ip_date, vaccine_report):
         req_header = {
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_4) AppleWebKit/600.7.12 (KHTML, like Gecko) Version/8.0.7 Safari/600.7.12'
         }
-        res = requests.get(query_url, headers=req_header)        
+        res = requests.get(query_url, headers=req_header)
+        
+        # When the call state is 403, wait for some time and try again in next pass
+        if res.status_code == 403:
+            time.sleep(60)
+            break
+            
         res_json = res.json()        
         centers = res_json['centers']
         
