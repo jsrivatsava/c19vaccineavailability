@@ -48,9 +48,12 @@ def mail_recipients(vaccine_report):
     if(check_last_hexdigest(curr_hexdigest)):
         send_email(mail_txt)
 
+def fix_day_month(ip_no):
+    return '0' + str(ip_no) if ip_no < 10 else str(ip_no)
+
 def prepare_report(ip_date, vaccine_report):    
     basepath = 'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin'    
-    query_date = str(ip_date.day) + '-' + str(ip_date.month) + '-' + str(ip_date.year)
+    query_date = fix_day_month(ip_date.day) + '-' + fix_day_month(ip_date.month) + '-' + str(ip_date.year)
         
     for pincode in pincodes:
         query_url = basepath + '?pincode=' + str(pincode) + '&date=' + query_date              
