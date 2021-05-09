@@ -1,6 +1,6 @@
 import requests, json, hashlib, smtplib, ssl, time
 from datetime import datetime, date, timedelta
-from . import mail_credentials as mc
+import mail_credentials as mc
 
 recepient_emails, pincodes, check_hash = None, None, None 
 
@@ -104,6 +104,12 @@ def execute_passes():
     pass1_report = prepare_report(date.today(), {})
     pass2_report = prepare_report(date.today() + timedelta(days=7), pass1_report)
     final_report = prepare_report(date.today() + timedelta(days=14), pass2_report)
+
+    # Load allowed vaccines
+    with open('vaccines.json') as f:
+        allowed_vaccines = json.load(f)
+        if allowed_vaccines:
+            final_report = {x:final_report[x] for x in final_report if x in [(x.upper()) for x in allowed_vaccines]}
 
     if final_report:
         mail_recipients(final_report)
